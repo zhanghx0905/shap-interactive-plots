@@ -1,0 +1,5 @@
+-r requirements.txt
+
+scikit-learn==1.2.1
+lightgbm==3.3.5
+pytest==7.2.2
