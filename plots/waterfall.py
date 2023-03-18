@@ -2,12 +2,12 @@ import json
 
 import numpy as np
 import plotly.graph_objects as go
-import shap
 
 from .utils import *
 
 
 def render_waterfall(values, feature_names, E_fx, fx, show=False):
+    values = np.round(values, 2)
     fig = go.Figure(
         go.Waterfall(
             orientation="h",
@@ -15,10 +15,13 @@ def render_waterfall(values, feature_names, E_fx, fx, show=False):
             measure=["relative" for _ in range(len(values))],
             y=feature_names,
             x=values,
-            connector={
-                "mode": "between",
-                "line": {"width": 4, "color": "rgb(0, 0, 0)", "dash": "solid"},
-            },
+            texttemplate="%{delta}",
+            textangle=0,
+            decreasing=dict(marker=dict(color="rgb(30, 136, 229)")),
+            increasing=dict(marker=dict(color="rgb(245, 39, 87)")),
+            totals=dict(marker=dict(color="#444444")),
+            connector=dict(line={"width": 4, "color": "#fff"}),
+            textposition="inside",
         )
     )
     fig.add_vline(
@@ -33,8 +36,9 @@ def render_waterfall(values, feature_names, E_fx, fx, show=False):
         annotation_text=f"f(x) = {fx:.2f}",
         annotation_position="top",
     )
+    fig.update_layout(**DEFAULT_LAYOUT)
     if show:
-        fig.show()
+        fig.show(config=DEFAULT_CONFIG)
     return fig.to_plotly_json()
 
 
@@ -77,4 +81,4 @@ def waterfall_plotly(
     fig_json = render_waterfall(values, feature_names, E_fx, fx, show=verbose)
     if save_to is not None:
         with open(save_to, "w", encoding="utf8") as f:
-            json.dump(fig_json, f)
+            json.dump(fig_json, f, cls=NumpyEncoder)

@@ -3,9 +3,9 @@ from typing import Optional
 
 import numpy as np
 import plotly.graph_objs as go
-import shap
 
-from .utils import RED_BLUE, NumpyEncoder, get_colors, get_minmax, reorder
+from .utils import (DEFAULT_CONFIG, DEFAULT_LAYOUT, RED_BLUE, NumpyEncoder,
+                    get_colors, get_minmax, reorder)
 
 
 def jitter(shaps):
@@ -74,8 +74,7 @@ def summary_plotly(
         )
     fig = go.Figure(data=data)
     fig.update_layout(
-        height=800,
-        # width=500,
+        **DEFAULT_LAYOUT,
         xaxis_title="SHAP value (impact on model output)",
         hovermode="closest",
         showlegend=False,
@@ -109,7 +108,7 @@ def summary_plotly(
     )
     fig.add_trace(colorbar_trace)
     if verbose:
-        fig.show()
+        fig.show(config=DEFAULT_CONFIG)
     if save_to is not None:
         with open(save_to, "w", encoding="utf8") as f:
             json.dump(fig.to_plotly_json(), f, cls=NumpyEncoder)

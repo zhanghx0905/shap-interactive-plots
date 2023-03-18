@@ -6,7 +6,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import shap
 
-from .utils import NumpyEncoder
+from .utils import DEFAULT_CONFIG, DEFAULT_LAYOUT, NumpyEncoder
 
 
 def partial_dependence_plotly(
@@ -81,9 +81,17 @@ def partial_dependence_plotly(
         x0, y0 = shap_values.data[ind], model_expected_value
         x1, y1 = shap_values.data[ind], model(shap_values.data.reshape(1, -1))[0]
         print(x0, y0)
-        fig.add_shape(type="line", x0=x0, y0=y0, x1=x1, y1=y1)
+        fig.add_shape(
+            type="line",
+            x0=x0,
+            y0=y0,
+            x1=x1,
+            y1=y1,
+            line=dict(color="rgb(30, 136, 229)"),
+        )
         fig.add_trace(go.Scatter(x=[x1], y=[y1], mode="markers", hoverinfo="x+y"))
     fig.update_layout(
+        **DEFAULT_LAYOUT,
         xaxis_title_text=target_name,
         yaxis_title_text=f"E[f(x) | {target_name}]",
         yaxis=dict(showgrid=False, autorange=True),
@@ -91,11 +99,9 @@ def partial_dependence_plotly(
             visible=False, overlaying="y", range=[0, features.shape[0]], showgrid=False
         ),
         showlegend=False,
-        paper_bgcolor="white",
-        plot_bgcolor="white",
     )
     if verbose:
-        fig.show()
+        fig.show(config=DEFAULT_CONFIG)
     if save_to is not None:
         with open(save_to, "w", encoding="utf8") as f:
             json.dump(fig.to_plotly_json(), f, cls=NumpyEncoder)

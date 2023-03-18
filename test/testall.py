@@ -6,13 +6,13 @@ import sklearn.datasets as D
 from plots import *
 
 
-def load_data(return_data=False):
+def load_data(return_data=False, explainer_cls=shap.Explainer):
     X, y = D.load_breast_cancer(return_X_y=True, as_frame=True)
 
     # explain the model's predictions using SHAP
     # (same syntax works for LightGBM, CatBoost, scikit-learn, transformers, Spark, etc.)
     model = lgb.LGBMClassifier().fit(X, y)
-    explainer = shap.Explainer(model)
+    explainer = explainer_cls(model)
     shap_values: shap.Explanation = explainer(X)[:, :, 0]
     if return_data:
         return model, shap_values, X
@@ -39,7 +39,7 @@ def test_decision():
 
 
 def test_partial_dependence():
-    model, shap_values = load_data()
+    model, shap_values = load_data(explainer_cls=shap.TreeExplainer)
     fid = np.argmax(model.feature_importances_)
     shap.partial_dependence_plot(
         fid,
@@ -72,9 +72,7 @@ def test_summary():
         verbose=True,
         save_to="test.json",
     )
-    shap.summary_plot(
-        shap_values.values, shap_values.data, shap_values.feature_names
-    )
+    shap.summary_plot(shap_values.values, shap_values.data, shap_values.feature_names)
 
 
 def test_waterfall():

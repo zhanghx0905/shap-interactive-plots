@@ -71,3 +71,13 @@ def get_colors(metrics: np.ndarray, vmin, vmax):
     colors[colors >= 255] = 254
     colors[colors < 0] = 0
     return reorder(np.array(RED_BLUE)[:, 1], colors)
+
+
+DEFAULT_LAYOUT = dict(
+    # Black Style
+    # paper_bgcolor="#222222",
+    # plot_bgcolor="#222222",
+    # font=dict(color="#fff"),
+    autosize=True,
+)
+DEFAULT_CONFIG = {"scrollZoom": False, "displayModeBar": False}

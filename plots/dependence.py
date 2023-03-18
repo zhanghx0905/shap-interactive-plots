@@ -7,7 +7,7 @@ import plotly.express as px
 import shap
 from shap.utils import approximate_interactions, convert_name
 
-from .utils import NumpyEncoder
+from .utils import DEFAULT_CONFIG, DEFAULT_LAYOUT, NumpyEncoder
 
 
 def dependence_plotly(
@@ -52,9 +52,15 @@ def dependence_plotly(
     df[keys[2]][df[keys[2]] < q_5] = q_5
     df[keys[2]][df[keys[2]] > q_95] = q_95
 
-    fig = px.scatter(df, x=keys[0], y=keys[1], color=keys[2])
+    fig = px.scatter(
+        df,
+        x=keys[0],
+        y=keys[1],
+        color=keys[2],
+    )
+    fig.update_layout(**DEFAULT_LAYOUT)
     if verbose:
-        fig.show()
+        fig.show(config=DEFAULT_CONFIG)
     if save_to:
         with open(save_to, "w", encoding="utf8") as f:
             json.dump(fig.to_plotly_json(), f, cls=NumpyEncoder)

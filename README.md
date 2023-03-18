@@ -18,13 +18,16 @@ This project reimplements these images with [Poltly](https://github.com/plotly/p
 
 ```bash
 pip install -r requirements_dev.txt
+
 pytest test/testall.py
 ```
 
 ![](./doc/dependence.png)
 
-![](./doc/localdep.png)
+![](./doc/partialdep.png)
+
+![](./doc/waterfall.png)
 
 ![](./doc/summary.png)
 
-![](./doc/dependence.png)
+![](./doc/decision.png)

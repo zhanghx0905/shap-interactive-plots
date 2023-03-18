@@ -5,7 +5,8 @@ import numpy as np
 import plotly.graph_objects as go
 import shap
 
-from .utils import RED_BLUE, NumpyEncoder, get_colors
+from .utils import (DEFAULT_CONFIG, DEFAULT_LAYOUT, RED_BLUE, NumpyEncoder,
+                    get_colors)
 
 
 def decision_data(
@@ -168,6 +169,7 @@ def decision_plotly(
     fig.add_trace(colorbar_trace)
     xdict = dict(range=xlim, zeroline=False, showline=False, showgrid=False)
     fig.update_layout(
+        **DEFAULT_LAYOUT,
         xaxis=dict(title="Model output value", **xdict),
         xaxis2=dict(side="top", **xdict, overlaying="x", ticklabelposition="inside"),
         hovermode="closest",
@@ -180,12 +182,10 @@ def decision_plotly(
             showline=False,
             showgrid=True,
         ),
-        # paper_bgcolor="white",
-        # plot_bgcolor="white",
     )
 
     if verbose:
-        fig.show()
+        fig.show(config=DEFAULT_CONFIG)
     if save_to is not None:
         with open(save_to, "w", encoding="utf8") as f:
             json.dump(fig.to_plotly_json(), f, cls=NumpyEncoder)
