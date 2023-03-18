@@ -40,6 +40,15 @@ def test_decision():
 
 def test_partial_dependence():
     model, shap_values = load_data(explainer_cls=shap.TreeExplainer)
+    partial_dependence_plotly(
+        fid,
+        model.predict,
+        shap_values.data,
+        # shap_values=shap_values[20],
+        feature_names=shap_values.feature_names,
+        verbose=True,
+        save_to="test.json",
+    )
     fid = np.argmax(model.feature_importances_)
     shap.partial_dependence_plot(
         fid,
@@ -50,15 +59,6 @@ def test_partial_dependence():
         ice=False,
         # shap_values=shap_values[20:21, :],
         feature_names=shap_values.feature_names,
-    )
-    partial_dependence_plotly(
-        fid,
-        model.predict,
-        shap_values.data,
-        # shap_values=shap_values[20],
-        feature_names=shap_values.feature_names,
-        verbose=True,
-        save_to="test.json",
     )
 
 
@@ -90,5 +90,12 @@ def test_waterfall():
 
 def test_dependence():
     _, shap_values, X = load_data(True)
-    dependence_plotly(1, shap_values, verbose=True, save_to="test.json")
+    dependence_plotly(
+        1,
+        shap_values.values,
+        shap_values.data,
+        shap_values.feature_names,
+        verbose=True,
+        save_to="test.json",
+    )
     shap.dependence_plot(1, shap_values.values, X)

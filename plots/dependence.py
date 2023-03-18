@@ -4,7 +4,6 @@ from typing import Optional, Union
 import numpy as np
 import pandas as pd
 import plotly.express as px
-import shap
 from shap.utils import approximate_interactions, convert_name
 
 from .utils import DEFAULT_CONFIG, DEFAULT_LAYOUT, NumpyEncoder
@@ -12,19 +11,13 @@ from .utils import DEFAULT_CONFIG, DEFAULT_LAYOUT, NumpyEncoder
 
 def dependence_plotly(
     ind: Union[int, str],
-    shap_value: shap.Explanation,
+    values,
+    features,
+    feature_names=None,
     interaction_index="auto",
     save_to: Optional[str] = None,
     verbose: bool = False,
 ):
-    features = (
-        shap_value.display_data
-        if shap_value.display_data is not None
-        else shap_value.data
-    )
-    feature_names = shap_value.feature_names
-    values = shap_value.values
-
     # fallback feature names
     if feature_names is None:
         feature_names = np.array([f"Feature {i}" for i in range(len(values))])
@@ -33,7 +26,7 @@ def dependence_plotly(
     if interaction_index == "auto":
         interaction_index = approximate_interactions(ind, values, features)[0]
     interaction_index = convert_name(interaction_index, values, feature_names)
-    # print(ind, interaction_index)
+
     keys = [
         feature_names[ind],
         f"SHAP value for\n{feature_names[ind]}",
