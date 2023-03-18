@@ -40,6 +40,7 @@ def test_decision():
 
 def test_partial_dependence():
     model, shap_values = load_data(explainer_cls=shap.TreeExplainer)
+    fid = np.argmax(model.feature_importances_)
     partial_dependence_plotly(
         fid,
         model.predict,
@@ -47,9 +48,8 @@ def test_partial_dependence():
         # shap_values=shap_values[20],
         feature_names=shap_values.feature_names,
         verbose=True,
-        save_to="test.json",
+        save_to="test.html",
     )
-    fid = np.argmax(model.feature_importances_)
     shap.partial_dependence_plot(
         fid,
         model.predict,
