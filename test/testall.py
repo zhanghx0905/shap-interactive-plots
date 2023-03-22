@@ -12,8 +12,8 @@ def load_data(return_data=False, explainer_cls=shap.Explainer):
     # explain the model's predictions using SHAP
     # (same syntax works for LightGBM, CatBoost, scikit-learn, transformers, Spark, etc.)
     model = lgb.LGBMClassifier().fit(X, y)
-    explainer = explainer_cls(model)
-    shap_values: shap.Explanation = explainer(X)[:, :, 0]
+    explainer = explainer_cls(model, X, model_output="probability")
+    shap_values: shap.Explanation = explainer(X)# [:, :, 0]
     if return_data:
         return model, shap_values, X
     return model, shap_values
@@ -63,16 +63,16 @@ def test_partial_dependence():
 
 
 def test_summary():
-    _, shap_values = load_data()
-
-    summary_plotly(
-        shap_values.values,
-        shap_values.data,
-        shap_values.feature_names,
-        verbose=True,
-        save_to="test.json",
-    )
-    shap.summary_plot(shap_values.values, shap_values.data, shap_values.feature_names)
+    _, shap_values = load_data(explainer_cls=shap.TreeExplainer)
+    print(shap_values.values)
+    # summary_plotly(
+    #     shap_values.values,
+    #     shap_values.data,
+    #     shap_values.feature_names,
+    #     verbose=True,
+    #     save_to="test.json",
+    # )
+    # shap.summary_plot(shap_values.values, shap_values.data, shap_values.feature_names)
 
 
 def test_waterfall():

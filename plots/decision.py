@@ -129,8 +129,9 @@ def decision_plotly(
     verbose=False,
     save_to=None,
 ):
-    shap_values = shap.utils.sample(shap_values, nlines)
-    features = shap.utils.sample(features, nlines)
+    sampleidx = np.random.choice(shap_values.shape[0], size=nlines)
+    shap_values = shap_values[sampleidx]
+    features = features[sampleidx]
     ret = decision_data(base_value, shap_values, features, feature_names, max_display)
     base_value, cumsum, features, feature_names, xlim = ret
     feature_names += ["Total"]
